@@ -15,16 +15,16 @@
     <div class="table">
       <v-simple-table dense>
         <tbody>
-          <tr
-            v-for="task in filteredList"
-            :key="task.id"
-            :class="{ green: Clicked }"
-          >
+          <tr v-for="(task, index) in filteredList" :key="task.id">
             <td>{{ task.category }}</td>
             <td>{{ task.delivery }}</td>
             <td>{{ task.setup }}</td>
             <td>
-              <v-icon @click="onClick">mdi-thumb-up</v-icon>
+              <v-icon
+                @click="push_local(task.delivery)"
+                :class="{ active: index === active }"
+                >mdi-thumb-up</v-icon
+              >
             </td>
           </tr>
         </tbody>
@@ -41,6 +41,7 @@ export default {
     return {
       search: "", // для отображения поисковика
       Clicked: false, // нажатие на смайлик
+      active: false,
     };
   },
   mounted() {
@@ -49,7 +50,8 @@ export default {
   },
   computed: {
     ...mapGetters(["smile", "searchValue"]),
-    filteredList() { // фильтр поиска по категории
+    filteredList() {
+      // фильтр поиска по категории
       var comp = this.search;
       if (this.search) {
         return this.smile.jokes.filter(function(elem) {
@@ -63,17 +65,13 @@ export default {
     },
   },
   methods: {
-    onClick() {
-      this.Clicked = !this.Clicked;
+    ...mapActions(["GET_SMILE_FROM_API", "GET_SEARCH_VALUE"]),
+    push_local(value) {
+      // добавление в локал хранилище
+      this.$store.dispatch("LOCAL", value);
     },
-    ...mapActions(["GET_SMILE_FROM_API", "DELETE", "GET_SEARCH_VALUE"]),
-    Del(index) {
-      this.DELETE(index);
-    },
-    push_local(index) { // добавление в локал хранилище
-      this.$store.dispatch("LOCAL", index);
-    },
-    searchV(value) { // для добавление в vuex данные поиска
+    searchV(value) {
+      // для добавление в vuex данные поиска
       this.GET_SEARCH_VALUE(value);
     },
   },
@@ -88,5 +86,9 @@ export default {
   box-shadow: 0 0 8px 0;
   width: 0 auto;
   border-radius: 10px;
+}
+.active {
+  color: white;
+  background: red;
 }
 </style>

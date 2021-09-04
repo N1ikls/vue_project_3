@@ -20,8 +20,8 @@ export default new Vuex.Store({
       localStorage.setItem("local", JSON.stringify(state.local)); // сохраняем
     },
 
-    DEL: (state, index) => {
-      state.local.splice(index, 1);
+    DEL: (state) => {
+      state.local = [];
     },
 
     SET_SEARCH_VALUE: (state, value) => {
@@ -42,8 +42,8 @@ export default new Vuex.Store({
       commit("PUSHLOCAL", local);
     },
 
-    DELETE({ commit }, index) {
-      commit("DEL", index);
+    DELETE({ commit }) {
+      commit("DEL");
     },
 
     GET_SEARCH_VALUE({ commit }, value) {
