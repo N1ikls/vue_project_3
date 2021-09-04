@@ -16,13 +16,13 @@
       <v-simple-table dense>
         <tbody>
           <tr v-for="(task, index) in filteredList" :key="task.id">
-            <td>{{ task.category }}</td>
-            <td>{{ task.delivery }}</td>
-            <td>{{ task.setup }}</td>
-            <td>
+            <td :class="{ active: index === active }">{{ task.category }}</td>
+            <td :class="{ active: index === active }">{{ task.delivery }}</td>
+            <td :class="{ active: index === active }">{{ task.setup }}</td>
+            <td :class="{ active: index === active }">
               <v-icon
-                @click="push_local(task.delivery)"
-                :class="{ active: index === active }"
+                @click="push_local(task.delivery), (active = index)"
+                
                 >mdi-thumb-up</v-icon
               >
             </td>
@@ -41,7 +41,8 @@ export default {
     return {
       search: "", // для отображения поисковика
       Clicked: false, // нажатие на смайлик
-      active: false,
+      active: null,
+      color: false,
     };
   },
   mounted() {
@@ -66,7 +67,7 @@ export default {
   },
   methods: {
     ...mapActions(["GET_SMILE_FROM_API", "GET_SEARCH_VALUE"]),
-    push_local(value) {
+    push_local(value, index) {
       // добавление в локал хранилище
       this.$store.dispatch("LOCAL", value);
     },
